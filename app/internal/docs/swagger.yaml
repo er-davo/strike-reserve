@@ -1,0 +1,721 @@
+basePath: /
+definitions:
+  api.Booking:
+    properties:
+      conferenceLink:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      slotId:
+        type: string
+      status:
+        $ref: '#/definitions/api.BookingStatus'
+      userId:
+        type: string
+    type: object
+  api.BookingStatus:
+    enum:
+    - active
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - Active
+    - Cancelled
+  api.ErrorResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.ErrorResponseErrorCode:
+    enum:
+    - BOOKING_NOT_FOUND
+    - FORBIDDEN
+    - INTERNAL_ERROR
+    - INVALID_REQUEST
+    - NOT_FOUND
+    - ROOM_NOT_FOUND
+    - SCHEDULE_EXISTS
+    - SLOT_ALREADY_BOOKED
+    - SLOT_NOT_FOUND
+    - UNAUTHORIZED
+    type: string
+    x-enum-varnames:
+    - BOOKINGNOTFOUND
+    - FORBIDDEN
+    - INTERNALERROR
+    - INVALIDREQUEST
+    - NOTFOUND
+    - ROOMNOTFOUND
+    - SCHEDULEEXISTS
+    - SLOTALREADYBOOKED
+    - SLOTNOTFOUND
+    - UNAUTHORIZED
+  api.GetBookingsList200JSONResponse:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/api.Booking'
+        type: array
+      pagination:
+        $ref: '#/definitions/api.Pagination'
+    type: object
+  api.GetBookingsList400JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.GetBookingsList403JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.GetBookingsMy200JSONResponse:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/api.Booking'
+        type: array
+    type: object
+  api.GetBookingsMy401JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.GetRoomsList200JSONResponse:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/api.Room'
+        type: array
+    type: object
+  api.GetRoomsRoomIdSlotsList200JSONResponse:
+    properties:
+      slots:
+        items:
+          $ref: '#/definitions/api.Slot'
+        type: array
+    type: object
+  api.InternalErrorResponse:
+    properties:
+      error:
+        properties:
+          code:
+            type: string
+          message:
+            type: string
+        type: object
+    type: object
+  api.Pagination:
+    properties:
+      page:
+        description: Page Текущая страница (начиная с 1)
+        type: integer
+      pageSize:
+        description: PageSize Размер страницы
+        type: integer
+      total:
+        description: Total Общее количество записей
+        type: integer
+    type: object
+  api.PostBookingsBookingIdCancel200JSONResponse:
+    properties:
+      booking:
+        $ref: '#/definitions/api.Booking'
+    type: object
+  api.PostBookingsBookingIdCancel403JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsBookingIdCancel404JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate201JSONResponse:
+    properties:
+      booking:
+        $ref: '#/definitions/api.Booking'
+    type: object
+  api.PostBookingsCreate400JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate401JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate403JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate404JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate409JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreate500JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            type: string
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostBookingsCreateJSONRequestBody:
+    properties:
+      createConferenceLink:
+        type: boolean
+      slotId:
+        type: string
+    type: object
+  api.PostDummyLoginJSONBodyRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - PostDummyLoginJSONBodyRoleAdmin
+    - PostDummyLoginJSONBodyRoleUser
+  api.PostDummyLoginJSONRequestBody:
+    properties:
+      role:
+        $ref: '#/definitions/api.PostDummyLoginJSONBodyRole'
+    type: object
+  api.PostLoginJSONRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  api.PostRegister201JSONResponse:
+    properties:
+      user:
+        $ref: '#/definitions/api.User'
+    type: object
+  api.PostRegisterJSONBodyRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - PostRegisterJSONBodyRoleAdmin
+    - PostRegisterJSONBodyRoleUser
+  api.PostRegisterJSONRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        $ref: '#/definitions/api.PostRegisterJSONBodyRole'
+    type: object
+  api.PostRoomsCreate201JSONResponse:
+    properties:
+      room:
+        $ref: '#/definitions/api.Room'
+    type: object
+  api.PostRoomsCreate403JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.PostRoomsCreateJSONRequestBody:
+    properties:
+      capacity:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  api.PostRoomsRoomIdScheduleCreate201JSONResponse:
+    properties:
+      schedule:
+        $ref: '#/definitions/api.Schedule'
+    type: object
+  api.PostRoomsRoomIdScheduleCreate409JSONResponse:
+    properties:
+      error:
+        properties:
+          code:
+            $ref: '#/definitions/api.ErrorResponseErrorCode'
+          message:
+            type: string
+        type: object
+    type: object
+  api.Room:
+    properties:
+      capacity:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  api.Schedule:
+    properties:
+      daysOfWeek:
+        description: DaysOfWeek 1=Пн .. 7=Вс, дни доступности. Каждое значение должно
+          быть в диапазоне 1–7.
+        items:
+          type: integer
+        type: array
+      endTime:
+        description: EndTime Время окончания (HH:MM) в рамках дня. Интерпретируется
+          как UTC.
+        type: string
+      id:
+        type: string
+      roomId:
+        type: string
+      startTime:
+        description: StartTime Время начала (HH:MM) в рамках дня. Интерпретируется
+          как UTC.
+        type: string
+    type: object
+  api.Slot:
+    properties:
+      end:
+        description: End Время окончания слота в UTC (ISO 8601, например 2024-06-10T09:30:00Z)
+        type: string
+      id:
+        type: string
+      roomId:
+        type: string
+      start:
+        description: Start Время начала слота в UTC (ISO 8601, например 2024-06-10T09:00:00Z)
+        type: string
+    type: object
+  api.Token:
+    properties:
+      token:
+        description: Token JWT для заголовка Authorization Bearer
+        type: string
+    type: object
+  api.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        $ref: '#/definitions/api.UserRole'
+    type: object
+  api.UserRole:
+    enum:
+    - admin
+    - user
+    type: string
+    x-enum-varnames:
+    - UserRoleAdmin
+    - UserRoleUser
+host: localhost:8080
+info:
+  contact: {}
+  description: Сервис бронирования переговорок
+  title: Room Booking Service API
+  version: 1.0.0
+paths:
+  /bookings/{bookingId}/cancel:
+    post:
+      description: Идемпотентная операция отмены брони. Только для владельца брони.
+      parameters:
+      - description: Идентификатор брони
+        format: uuid
+        in: path
+        name: bookingId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.PostBookingsBookingIdCancel200JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api.PostBookingsBookingIdCancel403JSONResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.PostBookingsBookingIdCancel404JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Отменить бронь (только своя, только user)
+      tags:
+      - Bookings
+  /bookings/create:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт бронь для пользователя. Админ не может бронировать. Слот
+        не должен быть в прошлом.
+      parameters:
+      - description: Параметры бронирования
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostBookingsCreateJSONRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate201JSONResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate400JSONResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate401JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate403JSONResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate404JSONResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate409JSONResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.PostBookingsCreate500JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать бронь на слот (только user)
+      tags:
+      - Bookings
+  /bookings/list:
+    get:
+      description: Возвращает все брони в системе. Доступно только для роли admin.
+      parameters:
+      - default: 1
+        description: Номер страницы (начиная с 1)
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Количество записей (max 100)
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GetBookingsList200JSONResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GetBookingsList400JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api.GetBookingsList403JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Список всех броней с пагинацией (только admin)
+      tags:
+      - Bookings
+  /bookings/my:
+    get:
+      description: Возвращает будущие брони (start >= now) авторизованного пользователя.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GetBookingsMy200JSONResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.GetBookingsMy401JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Список броней текущего пользователя (только user)
+      tags:
+      - Bookings
+  /dummyLogin:
+    post:
+      consumes:
+      - application/json
+      description: Выдаёт фиксированный UUID для admin или user.
+      parameters:
+      - description: Роль (admin/user)
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostDummyLoginJSONRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Token'
+      summary: Получить тестовый JWT по роли
+      tags:
+      - Auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает JWT. Доступно без авторизации.
+      parameters:
+      - description: Credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostLoginJSONRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Token'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.InternalErrorResponse'
+      summary: Авторизация по email и паролю (Доп. задание)
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя. Доступно без авторизации.
+      parameters:
+      - description: Данные регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostRegisterJSONRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.PostRegister201JSONResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.InternalErrorResponse'
+      summary: Регистрация пользователя (Доп. задание)
+      tags:
+      - Auth
+  /rooms/{roomId}/schedule/create:
+    post:
+      consumes:
+      - application/json
+      description: 'Создается один раз. Поле daysOfWeek: 1 (Пн) - 7 (Вс).'
+      parameters:
+      - description: Идентификатор комнаты
+        format: uuid
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: Объект расписания
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.Schedule'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.PostRoomsRoomIdScheduleCreate201JSONResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/api.PostRoomsRoomIdScheduleCreate409JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать расписание переговорки (только admin)
+      tags:
+      - Schedules
+  /rooms/{roomId}/slots/list:
+    get:
+      description: Возвращает свободные слоты на конкретный день. Параметр date обязателен.
+      parameters:
+      - description: Идентификатор комнаты
+        format: uuid
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - description: Дата (YYYY-MM-DD)
+        format: date
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GetRoomsRoomIdSlotsList200JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Список доступных слотов по дате
+      tags:
+      - Slots
+  /rooms/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные комнаты
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PostRoomsCreateJSONRequestBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.PostRoomsCreate201JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/api.PostRoomsCreate403JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Создать переговорку (только admin)
+      tags:
+      - Rooms
+  /rooms/list:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GetRoomsList200JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Список переговорок (admin и user)
+      tags:
+      - Rooms
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

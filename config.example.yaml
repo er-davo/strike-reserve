@@ -1,0 +1,52 @@
+app:
+  port: 8080
+  log_level: "info"
+  is_prod: true
+  migration_dir: "./migrations"
+  shutdown_timeout: "30s"
+  
+  page:
+    default: 1
+    min: 1
+    size:
+      default: 20
+      max: 100
+      min: 1
+
+  services:
+    password_cost: 12
+    slot_duration: "30m"
+    auth:
+      secret_key: ""
+      token_duration: "24h"
+    conference:
+      port: 9090
+      request_timeout: "5s"
+    slot_generator:
+      lookahead: 14
+      interval: "24h"
+
+redis:
+  host: redis
+  port: 6379
+  password: ""
+  db: 0
+  size: 100
+  duration: "30s"
+
+database:
+  dsn: postgres
+  conn:
+    max: 20
+    min: 5
+    max_life_time: "30m"
+    max_idle_time: "5m"
+    connect_timeout: "5s"
+
+retry:
+  backoff: "exponential"
+  base: "1s"
+  factor: 2.0
+  max: "30s"
+  max_attempts: 5
+  jitter: 0.1

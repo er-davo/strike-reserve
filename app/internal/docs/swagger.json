@@ -1,0 +1,1105 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Сервис бронирования переговорок",
+        "title": "Room Booking Service API",
+        "contact": {},
+        "version": "1.0.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/bookings/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создаёт бронь для пользователя. Админ не может бронировать. Слот не должен быть в прошлом.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Создать бронь на слот (только user)",
+                "parameters": [
+                    {
+                        "description": "Параметры бронирования",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreateJSONRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate201JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate400JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate401JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate403JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate404JSONResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate409JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsCreate500JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает все брони в системе. Доступно только для роли admin.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Список всех броней с пагинацией (только admin)",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Номер страницы (начиная с 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Количество записей (max 100)",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBookingsList200JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBookingsList400JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBookingsList403JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/my": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает будущие брони (start \u003e= now) авторизованного пользователя.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Список броней текущего пользователя (только user)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBookingsMy200JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBookingsMy401JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/{bookingId}/cancel": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Идемпотентная операция отмены брони. Только для владельца брони.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bookings"
+                ],
+                "summary": "Отменить бронь (только своя, только user)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор брони",
+                        "name": "bookingId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsBookingIdCancel200JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsBookingIdCancel403JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostBookingsBookingIdCancel404JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/dummyLogin": {
+            "post": {
+                "description": "Выдаёт фиксированный UUID для admin или user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Получить тестовый JWT по роли",
+                "parameters": [
+                    {
+                        "description": "Роль (admin/user)",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.PostDummyLoginJSONRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Token"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Возвращает JWT. Доступно без авторизации.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Авторизация по email и паролю (Доп. задание)",
+                "parameters": [
+                    {
+                        "description": "Credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.PostLoginJSONRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.Token"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.InternalErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Создаёт нового пользователя. Доступно без авторизации.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Регистрация пользователя (Доп. задание)",
+                "parameters": [
+                    {
+                        "description": "Данные регистрации",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRegisterJSONRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRegister201JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.InternalErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Создать переговорку (только admin)",
+                "parameters": [
+                    {
+                        "description": "Данные комнаты",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRoomsCreateJSONRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRoomsCreate201JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRoomsCreate403JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Список переговорок (admin и user)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomsList200JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{roomId}/schedule/create": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Создается один раз. Поле daysOfWeek: 1 (Пн) - 7 (Вс).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Создать расписание переговорки (только admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор комнаты",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Объект расписания",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.Schedule"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRoomsRoomIdScheduleCreate201JSONResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/api.PostRoomsRoomIdScheduleCreate409JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/rooms/{roomId}/slots/list": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Возвращает свободные слоты на конкретный день. Параметр date обязателен.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Slots"
+                ],
+                "summary": "Список доступных слотов по дате",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Идентификатор комнаты",
+                        "name": "roomId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Дата (YYYY-MM-DD)",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomsRoomIdSlotsList200JSONResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.Booking": {
+            "type": "object",
+            "properties": {
+                "conferenceLink": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "slotId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/api.BookingStatus"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.BookingStatus": {
+            "type": "string",
+            "enum": [
+                "active",
+                "cancelled"
+            ],
+            "x-enum-varnames": [
+                "Active",
+                "Cancelled"
+            ]
+        },
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.ErrorResponseErrorCode": {
+            "type": "string",
+            "enum": [
+                "BOOKING_NOT_FOUND",
+                "FORBIDDEN",
+                "INTERNAL_ERROR",
+                "INVALID_REQUEST",
+                "NOT_FOUND",
+                "ROOM_NOT_FOUND",
+                "SCHEDULE_EXISTS",
+                "SLOT_ALREADY_BOOKED",
+                "SLOT_NOT_FOUND",
+                "UNAUTHORIZED"
+            ],
+            "x-enum-varnames": [
+                "BOOKINGNOTFOUND",
+                "FORBIDDEN",
+                "INTERNALERROR",
+                "INVALIDREQUEST",
+                "NOTFOUND",
+                "ROOMNOTFOUND",
+                "SCHEDULEEXISTS",
+                "SLOTALREADYBOOKED",
+                "SLOTNOTFOUND",
+                "UNAUTHORIZED"
+            ]
+        },
+        "api.GetBookingsList200JSONResponse": {
+            "type": "object",
+            "properties": {
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Booking"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/api.Pagination"
+                }
+            }
+        },
+        "api.GetBookingsList400JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.GetBookingsList403JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.GetBookingsMy200JSONResponse": {
+            "type": "object",
+            "properties": {
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Booking"
+                    }
+                }
+            }
+        },
+        "api.GetBookingsMy401JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.GetRoomsList200JSONResponse": {
+            "type": "object",
+            "properties": {
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Room"
+                    }
+                }
+            }
+        },
+        "api.GetRoomsRoomIdSlotsList200JSONResponse": {
+            "type": "object",
+            "properties": {
+                "slots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.Slot"
+                    }
+                }
+            }
+        },
+        "api.InternalErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.Pagination": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "Page Текущая страница (начиная с 1)",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "PageSize Размер страницы",
+                    "type": "integer"
+                },
+                "total": {
+                    "description": "Total Общее количество записей",
+                    "type": "integer"
+                }
+            }
+        },
+        "api.PostBookingsBookingIdCancel200JSONResponse": {
+            "type": "object",
+            "properties": {
+                "booking": {
+                    "$ref": "#/definitions/api.Booking"
+                }
+            }
+        },
+        "api.PostBookingsBookingIdCancel403JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsBookingIdCancel404JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate201JSONResponse": {
+            "type": "object",
+            "properties": {
+                "booking": {
+                    "$ref": "#/definitions/api.Booking"
+                }
+            }
+        },
+        "api.PostBookingsCreate400JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate401JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate403JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate404JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate409JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreate500JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostBookingsCreateJSONRequestBody": {
+            "type": "object",
+            "properties": {
+                "createConferenceLink": {
+                    "type": "boolean"
+                },
+                "slotId": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.PostDummyLoginJSONBodyRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "PostDummyLoginJSONBodyRoleAdmin",
+                "PostDummyLoginJSONBodyRoleUser"
+            ]
+        },
+        "api.PostDummyLoginJSONRequestBody": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/api.PostDummyLoginJSONBodyRole"
+                }
+            }
+        },
+        "api.PostLoginJSONRequestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.PostRegister201JSONResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/api.User"
+                }
+            }
+        },
+        "api.PostRegisterJSONBodyRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "PostRegisterJSONBodyRoleAdmin",
+                "PostRegisterJSONBodyRoleUser"
+            ]
+        },
+        "api.PostRegisterJSONRequestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/api.PostRegisterJSONBodyRole"
+                }
+            }
+        },
+        "api.PostRoomsCreate201JSONResponse": {
+            "type": "object",
+            "properties": {
+                "room": {
+                    "$ref": "#/definitions/api.Room"
+                }
+            }
+        },
+        "api.PostRoomsCreate403JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.PostRoomsCreateJSONRequestBody": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.PostRoomsRoomIdScheduleCreate201JSONResponse": {
+            "type": "object",
+            "properties": {
+                "schedule": {
+                    "$ref": "#/definitions/api.Schedule"
+                }
+            }
+        },
+        "api.PostRoomsRoomIdScheduleCreate409JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "$ref": "#/definitions/api.ErrorResponseErrorCode"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "api.Room": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.Schedule": {
+            "type": "object",
+            "properties": {
+                "daysOfWeek": {
+                    "description": "DaysOfWeek 1=Пн .. 7=Вс, дни доступности. Каждое значение должно быть в диапазоне 1–7.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "endTime": {
+                    "description": "EndTime Время окончания (HH:MM) в рамках дня. Интерпретируется как UTC.",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "StartTime Время начала (HH:MM) в рамках дня. Интерпретируется как UTC.",
+                    "type": "string"
+                }
+            }
+        },
+        "api.Slot": {
+            "type": "object",
+            "properties": {
+                "end": {
+                    "description": "End Время окончания слота в UTC (ISO 8601, например 2024-06-10T09:30:00Z)",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "roomId": {
+                    "type": "string"
+                },
+                "start": {
+                    "description": "Start Время начала слота в UTC (ISO 8601, например 2024-06-10T09:00:00Z)",
+                    "type": "string"
+                }
+            }
+        },
+        "api.Token": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "description": "Token JWT для заголовка Authorization Bearer",
+                    "type": "string"
+                }
+            }
+        },
+        "api.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/api.UserRole"
+                }
+            }
+        },
+        "api.UserRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user"
+            ],
+            "x-enum-varnames": [
+                "UserRoleAdmin",
+                "UserRoleUser"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

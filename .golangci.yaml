@@ -1,0 +1,46 @@
+version: "2"
+run:
+  timeout: 3m
+  tests: true
+linters:
+  enable:
+    - bodyclose
+    - gocritic
+    - misspell
+    - prealloc
+    - errcheck
+    - revive
+    - unconvert
+  settings:
+    gocritic:
+      enabled-tags:
+        - performance
+        - style
+        - diagnostic
+    revive:
+      rules:
+        - name: var-naming
+        - name: indent-error-flow
+        - name: error-return
+  exclusions:
+    generated: lax
+    rules:
+      - path: (.+)\.go$
+        text: Error return value of .* is not checked
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
