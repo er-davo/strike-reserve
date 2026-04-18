@@ -648,7 +648,7 @@ func (h *Handler) PostLanesLaneIdScheduleCreate(ctx context.Context, request api
 // @Success 200 {object} api.GetRoomsRoomIdSlotsList200JSONResponse
 // @Router /rooms/{roomId}/slots/list [get]
 func (h *Handler) GetLanesLaneIdSlotsList(ctx context.Context, request api.GetLanesLaneIdSlotsListRequestObject) (api.GetLanesLaneIdSlotsListResponseObject, error) {
-	l := h.L(ctx).With(zap.String("room_id", request.LaneId.String()))
+	l := h.L(ctx).With(zap.String("lane_id", request.LaneId.String()))
 
 	if _, ok := getUser(ctx); !ok {
 		return api.GetLanesLaneIdSlotsList401JSONResponse{

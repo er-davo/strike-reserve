@@ -37,8 +37,8 @@ func JWTMiddleware(authSrv TokenValidator) echo.MiddlewareFunc {
 				return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid token"})
 			}
 
-			ctx = context.WithValue(ctx, UserKey, claims)
-			c.SetRequest(c.Request().WithContext(ctx))
+			jwtCtx := context.WithValue(ctx, UserKey, claims)
+			c.SetRequest(c.Request().WithContext(jwtCtx))
 
 			return next(c)
 		}
@@ -64,8 +64,8 @@ func LoggerMiddleware(baseLogger *zap.Logger) echo.MiddlewareFunc {
 
 			enrichedLogger := baseLogger.With(fields...)
 
-			newCtx := logger.ToContext(ctx, enrichedLogger)
-			c.SetRequest(req.WithContext(newCtx))
+			lCtx := logger.ToContext(ctx, enrichedLogger)
+			c.SetRequest(req.WithContext(lCtx))
 
 			return next(c)
 		}
